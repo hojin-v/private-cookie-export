@@ -1,0 +1,17 @@
+{
+  "name": "rabbyt-login-helper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "YouTube 로그인 정보를 기기에만 저장하는 RabbYT용 Firefox 도우미",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "lint": "addons-linter --warnings-as-errors extension",
+    "browser-test": "node scripts/browser-test.js",
+    "android-contract": "python3 scripts/android-contract.py",
+    "build": "python3 scripts/build.py",
+    "check": "npm test && npm run lint && npm run build"
+  },
+  "devDependencies": { "addons-linter": "10.14.0" }
+}
