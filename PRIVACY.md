@@ -1,6 +1,6 @@
 # 개인정보 안내
 
-**Private Cookie Export 0.3.6**
+**Private Cookie Export 0.3.7**
 
 확장을 열면 `activeTab`으로 활성 탭의 주소를 확인합니다. **쿠키 파일 준비**를 눌렀을 때만 Firefox에서 승인한 HTTPS 사이트의 사생활 보호 쿠키를 읽습니다. 일반 사이트는 현재 페이지 범위, YouTube는 `www.youtube.com/robots.txt`로 전환한 뒤 그 주소에 적용되는 쿠키를 사용합니다. 승인한 호스트 권한은 팝업에서 해제하기 전까지 Firefox에 남습니다. [포함 범위와 파일 항목](docs/COOKIE-FILE.md)
 

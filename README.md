@@ -46,4 +46,4 @@ npm run browser-test -- /path/to/firefox youtube
 npm run browser-test -- /path/to/firefox generic
 ```
 
-**0.3.6 미서명 배포 후보**입니다. Firefox Android 155 이상, 데스크톱 Firefox 140 이상을 대상으로 합니다. 사용자 사용법은 확장 팝업에서 확인할 수 있습니다. [배포 절차](docs/RELEASE.md) · [GNU GPL v3](LICENSE) · [이전 버전의 라이선스 고지](NOTICE)
+**0.3.7 미서명 배포 후보**입니다. Firefox Android 155 이상, 데스크톱 Firefox 140 이상을 대상으로 합니다. 사용자 사용법은 확장 팝업에서 확인할 수 있습니다. [배포 절차](docs/RELEASE.md) · [GNU GPL v3](LICENSE) · [이전 버전의 라이선스 고지](NOTICE)
