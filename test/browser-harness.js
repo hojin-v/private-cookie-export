@@ -40,10 +40,8 @@ try {
   }
   const excluded = { url, name: "FIXTURE_NORMAL_STORE", value: "FIXTURE_MUST_NOT_EXPORT", path: "/", storeId: "firefox-default" };
   check((await browser.cookies.set(excluded))?.storeId === "firefox-default", "the fixture adds a matching cookie to the normal store");
-  if (generic) {
-    const wrongPath = { ...excluded, url: new URL("/other", url).href, name: "FIXTURE_WRONG_PATH", path: "/other", storeId: "firefox-private" };
-    check((await browser.cookies.set(wrongPath))?.path === "/other", "the fixture adds a cookie outside the current page path");
-  }
+  const wrongPath = { ...excluded, url: new URL("/other", url).href, name: "FIXTURE_WRONG_PATH", path: "/other", storeId: "firefox-private" };
+  check((await browser.cookies.set(wrongPath))?.path === "/other", "the fixture adds a cookie outside the export URL path");
 
   const popup = new Promise(resolve => {
     browser.runtime.onMessage.addListener(function finish(message, sender) {

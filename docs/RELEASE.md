@@ -1,13 +1,13 @@
 # Mozilla 서명과 Android 배포
 
-현재 버전은 **0.3.3 미서명 배포 후보**입니다. 공개 AMO 항목과 일반 Firefox용 설치 파일은 Mozilla 제출 후 확인합니다.
+현재 버전은 **0.3.4 미서명 배포 후보**입니다. 공개 AMO 항목과 일반 Firefox용 설치 파일은 Mozilla 제출 후 확인합니다.
 
 ## 제출물
 
 | 파일 | 용도 |
 | --- | --- |
-| `dist/private-cookie-export-0.3.3-unsigned.zip` | Mozilla 서명·심사 제출 |
-| `dist/private-cookie-export-0.3.3-source.zip` | MIT 라이선스의 공개용 소스, 검증 코드와 문서 |
+| `dist/private-cookie-export-0.3.4-unsigned.zip` | Mozilla 서명·심사 제출 |
+| `dist/private-cookie-export-0.3.4-source.zip` | MIT 라이선스의 공개용 소스, 검증 코드와 문서 |
 | 두 ZIP의 `.sha256` | 내려받은 파일의 무결성 확인 |
 | [개인정보 안내](../PRIVACY.md) | 공개 저장소에서 읽을 수 있는 원문 |
 
@@ -19,10 +19,10 @@ npm audit
 
 `npm run verify-release`는 제출용 ZIP과 소스 ZIP, 각 SHA-256을 현재 소스에서 다시 계산한 결과와 비교합니다. 같은 Python·zlib 빌드 환경에서는 ZIP까지 바이트 단위로 일치합니다. Firefox에 넣는 HTML·CSS·JavaScript·SVG는 원본 그대로입니다. `node_modules`와 테스트는 제출용 ZIP에 포함하지 않습니다.
 
-0.3.3 미서명 제출 ZIP의 SHA-256입니다. Mozilla가 서명한 XPI와는 해시가 다릅니다.
+0.3.4 미서명 제출 ZIP의 SHA-256입니다. Mozilla가 서명한 XPI와는 해시가 다릅니다.
 
 ```text
-fa23b5566ff900e05c8707a6a6291d3631ee4b0dfe2ef59ccbbf84119655dae5
+45d921f64b25a5f89e9ca41ed69eda7a88215d18dbb83f5ea1b89a2762ba9331
 ```
 
 ## 등록 정보 초안
@@ -31,9 +31,9 @@ fa23b5566ff900e05c8707a6a6291d3631ee4b0dfe2ef59ccbbf84119655dae5
 
 **요약** Firefox 사생활 보호 탭에서 승인한 HTTPS 사이트의 쿠키를 Netscape 파일로 저장합니다.
 
-**설명** 사생활 보호 탭 한 개에서 확장을 열고 쿠키 파일 준비를 선택합니다. 처음 쓰는 사이트는 Firefox에서 권한을 승인합니다. 일반 사이트는 현재 페이지에 적용되는 쿠키를 읽습니다. YouTube는 같은 탭에서 저장용 주소로 이동한 뒤 준비합니다. 파일 저장을 누르고 다운로드를 확인합니다. YouTube에서는 확인 후 팝업에서 해당 탭을 닫을 수 있습니다. 파일은 암호화되지 않으므로 사용한 뒤 삭제하세요.
+**설명** 사생활 보호 탭 한 개에서 확장을 열고 쿠키 파일 준비를 선택합니다. 처음 쓰는 사이트는 Firefox에서 권한을 승인합니다. 일반 사이트는 현재 페이지에 적용되는 쿠키를 읽습니다. YouTube는 같은 탭을 저장용 주소로 이동한 뒤 그 주소에 적용되는 쿠키를 준비합니다. 파일 저장을 누르고 다운로드를 확인합니다. YouTube에서는 확인 후 팝업에서 해당 탭을 닫을 수 있습니다. 파일은 암호화되지 않으므로 사용한 뒤 삭제하세요.
 
-**심사 메모** The add-on uses `activeTab` to identify the current private HTTPS page, and `cookies` together with the explicitly granted optional host permission to read its cookies. It requests the current host only, or the YouTube domain and its subdomains for the dedicated YouTube flow. After a user requests preparation, the file is held in the extension popup and saved through a user-clicked link. The CSP blocks connections from extension pages. We declare `authenticationInfo` because the local file may contain session credentials. The runtime files are the original source. The bundled browser test uses a disposable profile with synthetic cookies.
+**심사 메모** The add-on uses `activeTab` to identify the current private HTTPS page, and `cookies` together with the explicitly granted optional host permission to read its cookies. It requests the current host only, or only www.youtube.com for the dedicated YouTube flow. That flow queries by the fixed robots.txt URL after navigating the same tab. After a user requests preparation, the file is held in the extension popup and saved through a user-clicked link. The CSP blocks connections from extension pages. We declare `authenticationInfo` because the local file may contain session credentials. The runtime files are the original source. The bundled browser test uses a disposable profile with synthetic cookies.
 
 ## 검사와 공개 순서
 

@@ -41,7 +41,7 @@ await writeFile(path.join(profile, "user.js"), Object.entries(prefs).map(([k, v]
 // It never changes the developer's or user's real Firefox profile.
 await writeFile(path.join(profile, "extension-preferences.json"), JSON.stringify({
   [manifest.browser_specific_settings.gecko.id]: {
-    permissions: ["internal:privateBrowsingAllowed"], origins: [scenario === "generic" ? "https://example.com/*" : "https://*.youtube.com/*"], data_collection: ["authenticationInfo"]
+    permissions: ["internal:privateBrowsingAllowed"], origins: [scenario === "generic" ? "https://example.com/*" : "https://www.youtube.com/*"], data_collection: ["authenticationInfo"]
   }
 }));
 const firefox = spawn(binary, ["--headless", "--no-remote", "--profile", profile, "--start-debugger-server", String(port), "about:blank"], { detached: true, stdio: ["ignore", "pipe", "pipe"] });

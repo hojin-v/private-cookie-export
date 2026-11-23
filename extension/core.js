@@ -1,5 +1,5 @@
 export const ROBOTS_URL = "https://www.youtube.com/robots.txt";
-export const YOUTUBE_ORIGIN = "https://*.youtube.com/*";
+export const YOUTUBE_ORIGIN = "https://www.youtube.com/*";
 export const PRIVATE_STORE = "firefox-private";
 export const MAX_BYTES = 262144;
 const HOST = /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$/;
@@ -57,8 +57,8 @@ export function assertPrivateStore(tab, stores) {
 }
 function appliesToSite(cookie, host, site) {
   if (!HOST.test(host)) return false;
-  if (site.youtube) return host === site.host || host.endsWith(`.${site.host}`);
-  if (host !== site.host && (cookie.hostOnly || !site.host.endsWith(`.${host}`))) return false;
+  const pageHost = site.url.hostname;
+  if (host !== pageHost && (cookie.hostOnly || !pageHost.endsWith(`.${host}`))) return false;
   const path = cookie.path;
   return typeof path === "string" && (site.url.pathname === path
     || site.url.pathname.startsWith(path.endsWith("/") ? path : `${path}/`));

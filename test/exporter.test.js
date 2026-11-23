@@ -18,7 +18,7 @@ test("the Android-compatible path works without Tab.cookieStoreId or the downloa
   assert.equal(result.phase, "prepared");
   assert.equal(result.tabId, 7);
   assert.deepEqual(result.summary, { total: 2, session: 2, httpOnly: 2 });
-  assert.deepEqual(f.calls, [["cookies", { domain: "youtube.com", storeId: "firefox-private", firstPartyDomain: "" }]]);
+  assert.deepEqual(f.calls, [["cookies", { url: ROBOTS_URL, storeId: "firefox-private", firstPartyDomain: "" }]]);
   assert.ok((await result.file.text()).startsWith("# Netscape HTTP Cookie File"));
   assert.ok(!JSON.stringify(await helper.status()).includes("TEST_ONLY_NOT_A_REAL_SESSION"));
   assert.ok(!Object.values(helper).some(value => value instanceof Blob));
@@ -27,8 +27,11 @@ test("the Android-compatible path works without Tab.cookieStoreId or the downloa
 test("one preparation moves the same YouTube tab and reads only after navigation", async () => {
   const f = fakeBrowser(), helper = new ExportController(f.api);
   f.tabs[0].url = "https://m.youtube.com/watch?v=TEST";
+  f.data.push({ ...f.data[0], name: "MOBILE_HOST", domain: "m.youtube.com", hostOnly: true });
   assert.equal((await helper.status()).phase, "ready");
-  assert.equal((await helper.prepare(true, 7, YOUTUBE_ORIGIN)).phase, "prepared");
+  const result = await helper.prepare(true, 7, YOUTUBE_ORIGIN);
+  assert.equal(result.phase, "prepared");
+  assert.doesNotMatch(await result.file.text(), /MOBILE_HOST/);
   assert.deepEqual(f.calls.map(call => call[0]), ["navigate", "cookies"]);
   assert.deepEqual(f.calls[0], ["navigate", 7, ROBOTS_URL]);
 });

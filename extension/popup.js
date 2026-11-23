@@ -18,7 +18,7 @@ function show(message) {
   const ready = current?.phase === "ready";
   scope.hidden = !ready;
   scope.textContent = ready && current.permission === YOUTUBE_ORIGIN
-    ? "youtube.com과 하위 도메인 · 저장용 페이지로 이동합니다."
+    ? "YouTube 저장용 주소에 적용되는 쿠키만 담습니다."
     : "현재 HTTPS 페이지 · 이 주소에 적용되는 쿠키만 포함합니다.";
   prepare.hidden = !ready || Boolean(prepared);
   prepare.disabled = busy;
@@ -97,7 +97,9 @@ revoke.addEventListener("click", async () => {
   closeTabId = undefined;
   show("이 사이트의 권한을 해제하고 있습니다…");
   try {
-    await browser.permissions.remove({ origins: [current.permission] });
+    const origins = [current.permission];
+    if (current.permission === YOUTUBE_ORIGIN) origins.push("https://*.youtube.com/*");
+    await browser.permissions.remove({ origins });
     await refresh();
   } catch (error) { show(safeMessage(error)); }
   finally { busy = false; prepare.disabled = false; revoke.disabled = false; }

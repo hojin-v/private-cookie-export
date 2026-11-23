@@ -1,8 +1,8 @@
 # 개인정보 안내
 
-**Private Cookie Export 0.3.3**
+**Private Cookie Export 0.3.4**
 
-확장을 열면 `activeTab`으로 활성 탭의 주소를 확인합니다. **쿠키 파일 준비**를 눌렀을 때만 Firefox에서 승인한 HTTPS 사이트의 사생활 보호 쿠키를 읽습니다. 일반 사이트는 현재 페이지 범위, YouTube는 저장용 주소로 전환한 뒤 YouTube 도메인 범위를 사용합니다. 승인한 호스트 권한은 팝업에서 해제하기 전까지 Firefox에 남습니다. [포함 범위와 파일 항목](docs/COOKIE-FILE.md)
+확장을 열면 `activeTab`으로 활성 탭의 주소를 확인합니다. **쿠키 파일 준비**를 눌렀을 때만 Firefox에서 승인한 HTTPS 사이트의 사생활 보호 쿠키를 읽습니다. 일반 사이트는 현재 페이지 범위, YouTube는 `www.youtube.com/robots.txt`로 전환한 뒤 그 주소에 적용되는 쿠키를 사용합니다. 승인한 호스트 권한은 팝업에서 해제하기 전까지 Firefox에 남습니다. [포함 범위와 파일 항목](docs/COOKIE-FILE.md)
 
 쿠키는 메모리에서 Netscape 파일로 준비되며 사용자가 **파일 저장**을 눌러 Firefox 다운로드로 저장합니다. 화면에는 건수만 표시합니다. 확장 저장소, 클립보드, 로그에는 쿠키 값을 쓰지 않습니다. [매니페스트](extension/manifest.json)에서 호스트 권한과 확장 페이지의 네트워크 연결을 차단하는 CSP를 확인할 수 있습니다.
 

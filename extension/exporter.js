@@ -76,12 +76,11 @@ export class ExportController {
       const expectedUrl = site.youtube ? ROBOTS_URL : tab.url;
       const before = await this.context(tabId, permission);
       if (before.tab.url !== expectedUrl || (site.youtube && before.tab.status !== "complete")) throw new HelperError("changed");
-      const scope = site.youtube ? { domain: site.host } : { url: site.url.href };
-      const cookies = await this.api.cookies.getAll({ ...scope, storeId: PRIVATE_STORE, firstPartyDomain: "" });
+      const cookies = await this.api.cookies.getAll({ url: before.site.url.href, storeId: PRIVATE_STORE, firstPartyDomain: "" });
       const after = await this.context(tabId, permission);
       if (after.tab.url !== expectedUrl || (site.youtube && after.tab.status !== "complete")
           || !await this.api.permissions.contains({ origins })) throw new HelperError("changed");
-      const { text, summary } = exportNetscape(cookies, site);
+      const { text, summary } = exportNetscape(cookies, before.site);
       const file = new Blob([text], { type: "text/plain;charset=utf-8" });
       return { phase: "prepared", file, filename: exportFilename(), tabId, summary };
     } catch (error) {
