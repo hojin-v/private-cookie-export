@@ -13,7 +13,7 @@ EXTENSION_FILES = (
     "popup.css", "popup.html", "popup.js", "privacy.html",
 )
 SOURCE_FILES = (
-    ".gitignore", "LICENSE", "PRIVACY.md", "README.md", "SECURITY.md", "package.json", "package-lock.json",
+    ".gitignore", "LICENSE", "NOTICE", "PRIVACY.md", "README.md", "SECURITY.md", "package.json", "package-lock.json",
     "docs/COOKIE-FILE.md", "docs/RELEASE.md", "docs/VALIDATION.md", "scripts/android-contract.py", "scripts/browser-test.js", "scripts/build.py",
     "test/boundary.test.js", "test/browser-harness.js", "test/core.test.js", "test/exporter.test.js", "test/fixtures.js",
     "test/popup-harness.js",
@@ -71,7 +71,8 @@ def main():
 
     source = {name: (ROOT / name).read_bytes() for name in SOURCE_FILES}
     source.update({f"extension/{name}": data for name, data in extension.items()})
-    extension["LICENSE"] = source["LICENSE"]
+    for name in ("LICENSE", "NOTICE"):
+        extension[name] = source[name]
     if args.verify_signed:
         verify_signed(args.verify_signed, extension)
         return
