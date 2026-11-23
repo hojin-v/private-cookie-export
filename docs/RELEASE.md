@@ -1,6 +1,6 @@
 # Mozilla 서명과 Android 배포
 
-현재 버전은 **0.3.7 미서명 배포 후보**입니다. 공개 AMO 항목과 일반 Firefox용 설치 파일은 Mozilla 제출 후 확인합니다.
+**0.3.7을 Mozilla Add-ons에 제출했습니다.** 제출 시 확인한 상태는 심사 대기입니다. 확장 ID는 `private-cookie-export@hnode`이며 공개 개발자명은 `Hnode`입니다. 제출 패키지와 심사용 소스 ZIP은 아래 커밋에서 재현할 수 있습니다. [제출 소스](https://github.com/hojin-v/private-cookie-export/tree/1333593) · [Mozilla 심사 및 공개 절차](https://extensionworkshop.com/documentation/publish/submitting-an-add-on/)
 
 ## 제출물
 
