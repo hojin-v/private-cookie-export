@@ -9,9 +9,20 @@ function check(condition, name) {
 }
 
 try {
-  let networkBlocked = false;
-  try { await fetch("https://example.invalid/"); } catch { networkBlocked = true; }
-  check(networkBlocked, "extension CSP blocks network fetch");
+  const probe = "https://example.invalid/";
+  const violation = new Promise(resolve => {
+    const timeout = setTimeout(() => { removeEventListener("securitypolicyviolation", record); resolve(false); }, 3000);
+    function record(event) {
+      if (event.effectiveDirective !== "connect-src" || event.disposition !== "enforce" || !event.blockedURI.startsWith(probe)) return;
+      clearTimeout(timeout);
+      removeEventListener("securitypolicyviolation", record);
+      resolve(true);
+    }
+    addEventListener("securitypolicyviolation", record);
+  });
+  // A failed request alone could be a DNS error. Require a browser-generated enforcement event.
+  void fetch(probe).catch(() => {});
+  check(await violation, "Firefox reports enforced connect-src blocking of an extension fetch");
   const url = generic ? "https://example.com/" : "https://www.youtube.com/robots.txt?fixture=1";
   const window = await browser.windows.create({ incognito: true, url });
   const tab = window.tabs[0];
@@ -26,6 +37,12 @@ try {
   for (const name of generic ? ["FIXTURE_SESSION"] : ["LOGIN_INFO", "SAPISID"]) {
     await browser.cookies.set({ url, domain: generic ? ".example.com" : ".youtube.com", name,
       value: "TEST_ONLY_NOT_A_REAL_SESSION", path: "/", httpOnly: true, secure: true, storeId: "firefox-private" });
+  }
+  const excluded = { url, name: "FIXTURE_NORMAL_STORE", value: "FIXTURE_MUST_NOT_EXPORT", path: "/", storeId: "firefox-default" };
+  check((await browser.cookies.set(excluded))?.storeId === "firefox-default", "the fixture adds a matching cookie to the normal store");
+  if (generic) {
+    const wrongPath = { ...excluded, url: new URL("/other", url).href, name: "FIXTURE_WRONG_PATH", path: "/other", storeId: "firefox-private" };
+    check((await browser.cookies.set(wrongPath))?.path === "/other", "the fixture adds a cookie outside the current page path");
   }
 
   const popup = new Promise(resolve => {

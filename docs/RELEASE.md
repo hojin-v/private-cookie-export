@@ -1,13 +1,13 @@
 # Mozilla 서명과 Android 배포
 
-현재 버전은 **0.3.2 미서명 배포 후보**입니다. 공개 AMO 항목과 일반 Firefox용 설치 파일은 Mozilla 제출 후 확인합니다.
+현재 버전은 **0.3.3 미서명 배포 후보**입니다. 공개 AMO 항목과 일반 Firefox용 설치 파일은 Mozilla 제출 후 확인합니다.
 
 ## 제출물
 
 | 파일 | 용도 |
 | --- | --- |
-| `dist/private-cookie-export-0.3.2-unsigned.zip` | Mozilla 서명·심사 제출 |
-| `dist/private-cookie-export-0.3.2-source.zip` | MIT 라이선스의 공개용 소스, 검증 코드와 문서 |
+| `dist/private-cookie-export-0.3.3-unsigned.zip` | Mozilla 서명·심사 제출 |
+| `dist/private-cookie-export-0.3.3-source.zip` | MIT 라이선스의 공개용 소스, 검증 코드와 문서 |
 | 두 ZIP의 `.sha256` | 내려받은 파일의 무결성 확인 |
 | [개인정보 안내](../PRIVACY.md) | 공개 저장소에서 읽을 수 있는 원문 |
 
@@ -19,10 +19,10 @@ npm audit
 
 `npm run verify-release`는 제출용 ZIP과 소스 ZIP, 각 SHA-256을 현재 소스에서 다시 계산한 결과와 비교합니다. 같은 Python·zlib 빌드 환경에서는 ZIP까지 바이트 단위로 일치합니다. Firefox에 넣는 HTML·CSS·JavaScript·SVG는 원본 그대로입니다. `node_modules`와 테스트는 제출용 ZIP에 포함하지 않습니다.
 
-0.3.2 미서명 제출 ZIP의 SHA-256입니다. Mozilla가 서명한 XPI와는 해시가 다릅니다.
+0.3.3 미서명 제출 ZIP의 SHA-256입니다. Mozilla가 서명한 XPI와는 해시가 다릅니다.
 
 ```text
-9f359623a783fcaae1278b7fd59f7cb433f76ccb888f783968a36679b87674a6
+fa23b5566ff900e05c8707a6a6291d3631ee4b0dfe2ef59ccbbf84119655dae5
 ```
 
 ## 등록 정보 초안

@@ -72,6 +72,7 @@ try {
   if (!output.startsWith("# Netscape HTTP Cookie File\n") || !output.includes("TEST_ONLY_NOT_A_REAL_SESSION")) throw new Error("Browser saved an unexpected file");
   const expected = scenario === "generic" ? "\tFIXTURE_SESSION\t" : "\tLOGIN_INFO\t";
   if (!output.includes(expected)) throw new Error("Browser saved a file from the wrong site");
+  if (output.includes("FIXTURE_MUST_NOT_EXPORT")) throw new Error("Browser saved a cookie outside the requested store or page path");
   console.log(JSON.stringify({ ok: true, scenario, checks: report.checks, cookieFileVerified: true }, null, 2));
 } catch (error) {
   await writeFile(path.join(temporary, "firefox.log"), logs);

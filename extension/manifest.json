@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Private Cookie Export",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Firefox 사생활 보호 탭에서 승인한 HTTPS 사이트의 쿠키를 표준 cookies.txt 파일로 저장합니다.",
   "permissions": ["activeTab", "cookies"],
   "optional_host_permissions": ["https://*/*"],

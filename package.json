@@ -1,6 +1,6 @@
 {
   "name": "private-cookie-export",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
   "type": "module",
   "description": "사생활 보호 탭의 쿠키를 내보내는 Firefox 확장",
