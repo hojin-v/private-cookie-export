@@ -1,22 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "RabbYT 로그인 도우미",
-  "version": "0.1.0",
-  "description": "사용자가 요청할 때 YouTube 로그인 정보만 기기의 파일로 저장합니다. 서버로 전송하지 않습니다.",
-  "permissions": ["cookies", "downloads"],
-  "host_permissions": ["https://*.youtube.com/*"],
+  "name": "Private Cookie Export",
+  "version": "0.3.2",
+  "description": "Firefox 사생활 보호 탭에서 승인한 HTTPS 사이트의 쿠키를 표준 cookies.txt 파일로 저장합니다.",
+  "permissions": ["activeTab", "cookies"],
+  "optional_host_permissions": ["https://*/*"],
   "background": { "scripts": ["background.js"], "type": "module" },
-  "action": { "default_title": "RabbYT 로그인 도우미", "default_popup": "popup.html", "default_icon": "icon.svg" },
+  "action": { "default_title": "Private Cookie Export", "default_popup": "popup.html", "default_icon": "icon.svg" },
   "icons": { "48": "icon.svg", "96": "icon.svg" },
   "content_security_policy": {
     "extension_pages": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "rabbyt-login-helper@ive.codes",
+      "id": "private-cookie-export@ive.codes",
       "strict_min_version": "140.0",
       "data_collection_permissions": { "required": ["authenticationInfo"] }
     },
-    "gecko_android": { "strict_min_version": "142.0" }
+    "gecko_android": { "strict_min_version": "155.0" }
   }
 }

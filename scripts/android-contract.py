@@ -25,9 +25,9 @@ if not all(p.is_file() for p in sources):
 with tempfile.TemporaryDirectory(prefix="rabbyt-helper-android-contract-") as directory:
     folder = Path(directory)
     script = f"""
-import {{ exportNetscape }} from {json.dumps((ROOT / 'extension/core.js').as_uri())};
+import {{ exportNetscape, siteForUrl }} from {json.dumps((ROOT / 'extension/core.js').as_uri())};
 const base={{domain:'.youtube.com',path:'/',value:'TEST_ONLY_NOT_A_REAL_SESSION',secure:true,httpOnly:true,hostOnly:false,session:true,storeId:'firefox-private'}};
-console.log(exportNetscape([{{...base,name:'LOGIN_INFO'}},{{...base,name:'SAPISID'}},{{...base,name:'__Secure-3PAPISID',domain:'www.youtube.com',hostOnly:true,session:false,expirationDate:Math.floor(Date.now()/1000)+3600}}], 'firefox-private'));
+console.log(exportNetscape([{{...base,name:'LOGIN_INFO'}},{{...base,name:'SAPISID'}},{{...base,name:'__Secure-3PAPISID',domain:'www.youtube.com',hostOnly:true,session:false,expirationDate:Math.floor(Date.now()/1000)+3600}}], siteForUrl('https://www.youtube.com/')).text);
 """
     result = subprocess.run(["node", "--input-type=module", "-e", script], text=True, capture_output=True, check=True)
     cookie_file = folder / "synthetic-cookies.txt"

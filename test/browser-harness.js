@@ -1,38 +1,60 @@
-// Copied into an isolated temporary extension by scripts/browser-test.js. Never packaged.
-import { ExportController } from "./exporter.js";
+// Copied into an isolated temporary add-on by scripts/browser-test.js. Never packaged.
+import "./background.js";
 
 const report = { ok: false, checks: [] };
-function check(condition, name) { if (!condition) throw new Error(name); report.checks.push(name); }
+const generic = false;
+function check(condition, name) {
+  if (!condition) throw new Error(name);
+  report.checks.push(name);
+}
+
 try {
   let networkBlocked = false;
   try { await fetch("https://example.invalid/"); } catch { networkBlocked = true; }
   check(networkBlocked, "extension CSP blocks network fetch");
-  const window = await browser.windows.create({ incognito: true, url: "https://www.youtube.com/robots.txt" });
+  const url = generic ? "https://example.com/" : "https://www.youtube.com/robots.txt?fixture=1";
+  const window = await browser.windows.create({ incognito: true, url });
   const tab = window.tabs[0];
-  await new Promise((resolve, reject) => {
-    const timer = setTimeout(() => { browser.tabs.onUpdated.removeListener(updated); reject(Error("test page timed out")); }, 20000);
-    const done = () => { clearTimeout(timer); browser.tabs.onUpdated.removeListener(updated); resolve(); };
-    const updated = (id, change) => { if (id === tab.id && change.status === "complete") done(); };
-    browser.tabs.onUpdated.addListener(updated);
-    browser.tabs.get(tab.id).then(current => { if (current.status === "complete") done(); });
-  });
-  check(await browser.extension.isAllowedIncognitoAccess(), "temporary test add-on can use private mode");
-  // Synthetic values only; these are added AFTER navigation and cannot authenticate an account.
-  for (const name of ["LOGIN_INFO", "SAPISID"]) {
-    await browser.cookies.set({ url: "https://www.youtube.com/", domain: ".youtube.com", name,
-      value: "TEST_ONLY_NOT_A_REAL_SESSION", path: "/", httpOnly: true, secure: true, storeId: tab.cookieStoreId });
+  await browser.windows.update(window.id, { focused: true });
+  for (let attempt = 0; ; attempt++) {
+    const [active] = await browser.tabs.query({ active: true, currentWindow: true });
+    if (active?.id === tab.id && active.url === url && active.status === "complete") break;
+    if (attempt === 149) throw new Error("The synthetic fixture tab did not finish loading");
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
-  const helper = new ExportController(browser);
-  check((await helper.status()).phase === "ready", "real Firefox private store is recognized");
-  const result = await helper.save(true);
-  check(result.phase === "success", "real cookies API and blob download complete");
-  check(result.closed === true, "only the source private tab closes after saving");
-  check(!JSON.stringify(result).includes("TEST_ONLY"), "the public result contains no cookie values");
-  const entries = await browser.downloads.search({ query: [result.filename] });
-  check(entries.some(item => item.state === "complete" && !item.incognito), "download remains accessible after the private tab closes");
-  report.filename = result.filename; report.ok = true;
+  check(await browser.extension.isAllowedIncognitoAccess(), "temporary test add-on can use private mode");
+  for (const name of generic ? ["FIXTURE_SESSION"] : ["LOGIN_INFO", "SAPISID"]) {
+    await browser.cookies.set({ url, domain: generic ? ".example.com" : ".youtube.com", name,
+      value: "TEST_ONLY_NOT_A_REAL_SESSION", path: "/", httpOnly: true, secure: true, storeId: "firefox-private" });
+  }
+
+  const popup = new Promise(resolve => {
+    browser.runtime.onMessage.addListener(function finish(message, sender) {
+      if (message?.action !== "test-popup-report" || sender.url !== browser.runtime.getURL("popup.html")) return;
+      browser.runtime.onMessage.removeListener(finish);
+      resolve(message.report);
+    });
+  });
+  const tabClosed = generic ? null : new Promise(resolve => {
+    browser.tabs.onRemoved.addListener(function removed(id) {
+      if (id !== tab.id) return;
+      browser.tabs.onRemoved.removeListener(removed);
+      resolve(true);
+    });
+  });
+  await browser.action.openPopup({ windowId: window.id });
+  const result = await popup;
+  if (!result.ok) throw new Error(result.error);
+  report.checks.push(...result.checks);
+  if (tabClosed) {
+    const timedOut = new Promise(resolve => setTimeout(resolve, 5000, false));
+    check(await Promise.race([tabClosed, timedOut]), "the explicit close button closes the same YouTube save tab");
+  } else {
+    check((await browser.tabs.get(tab.id)).incognito, "the generic site tab stays open");
+  }
+  report.filename = result.filename;
+  report.ok = true;
 } catch (error) {
-  // These are fixed test check names or API failures in a profile with synthetic data only.
   report.error = String(error.message);
 }
 const blob = URL.createObjectURL(new Blob([JSON.stringify(report)], { type: "application/json" }));

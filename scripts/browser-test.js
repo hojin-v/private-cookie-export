@@ -9,15 +9,23 @@ import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 
 const binary = process.argv[2];
-if (!binary) throw new Error("Usage: npm run browser-test -- /absolute/path/to/firefox");
+const scenario = process.argv[3] ?? "youtube";
+if (!binary || !["youtube", "generic"].includes(scenario)) throw new Error("Usage: npm run browser-test -- /absolute/path/to/firefox [youtube|generic]");
 const root = fileURLToPath(new URL("../", import.meta.url));
-const temporary = await mkdtemp(path.join(tmpdir(), "rabbyt-helper-browser-test-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "private-cookie-export-browser-test-"));
 const profile = path.join(temporary, "profile"), addon = path.join(temporary, "addon"), downloads = path.join(temporary, "downloads");
 await Promise.all([mkdir(profile), mkdir(downloads), cp(path.join(root, "extension"), addon, { recursive: true })]);
 const manifest = JSON.parse(await readFile(path.join(addon, "manifest.json")));
 manifest.background.scripts = ["browser-harness.js"];
+manifest.permissions.push("downloads"); // Harness only. The production extension has no downloads API permission.
 await writeFile(path.join(addon, "manifest.json"), JSON.stringify(manifest));
-await cp(path.join(root, "test/browser-harness.js"), path.join(addon, "browser-harness.js"));
+await Promise.all(["browser-harness.js", "popup-harness.js"].map(file => cp(path.join(root, "test", file), path.join(addon, file))));
+if (scenario === "generic") {
+  const harnessPath = path.join(addon, "browser-harness.js");
+  await writeFile(harnessPath, (await readFile(harnessPath, "utf8")).replace("const generic = false;", "const generic = true;"));
+}
+const popupPath = path.join(addon, "popup.html");
+await writeFile(popupPath, (await readFile(popupPath, "utf8")).replace("</body>", '<script type="module" src="popup-harness.js"></script></body>'));
 const probe = net.createServer(); await new Promise(resolve => probe.listen(0, "127.0.0.1", resolve));
 const port = probe.address().port; await new Promise(resolve => probe.close(resolve));
 const prefs = {
@@ -33,7 +41,7 @@ await writeFile(path.join(profile, "user.js"), Object.entries(prefs).map(([k, v]
 // It never changes the developer's or user's real Firefox profile.
 await writeFile(path.join(profile, "extension-preferences.json"), JSON.stringify({
   [manifest.browser_specific_settings.gecko.id]: {
-    permissions: ["internal:privateBrowsingAllowed"], origins: ["https://*.youtube.com/*"], data_collection: ["authenticationInfo"]
+    permissions: ["internal:privateBrowsingAllowed"], origins: [scenario === "generic" ? "https://example.com/*" : "https://*.youtube.com/*"], data_collection: ["authenticationInfo"]
   }
 }));
 const firefox = spawn(binary, ["--headless", "--no-remote", "--profile", profile, "--start-debugger-server", String(port), "about:blank"], { detached: true, stdio: ["ignore", "pipe", "pipe"] });
@@ -62,7 +70,9 @@ try {
   if (!report?.ok) throw new Error(report?.error || "Browser report timed out");
   const output = await readFile(path.join(downloads, report.filename), "utf8");
   if (!output.startsWith("# Netscape HTTP Cookie File\n") || !output.includes("TEST_ONLY_NOT_A_REAL_SESSION")) throw new Error("Browser saved an unexpected file");
-  console.log(JSON.stringify({ ok: true, checks: report.checks, cookieFileVerified: true }, null, 2));
+  const expected = scenario === "generic" ? "\tFIXTURE_SESSION\t" : "\tLOGIN_INFO\t";
+  if (!output.includes(expected)) throw new Error("Browser saved a file from the wrong site");
+  console.log(JSON.stringify({ ok: true, scenario, checks: report.checks, cookieFileVerified: true }, null, 2));
 } catch (error) {
   await writeFile(path.join(temporary, "firefox.log"), logs);
   console.error(`Browser test failed: ${error.message}\nDiagnostics: ${temporary}`); process.exitCode = 1;

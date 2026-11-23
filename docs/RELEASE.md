@@ -1,26 +1,52 @@
 # Mozilla 서명과 Android 배포
 
-현재 패키지는 **미서명 개발본**입니다. GitHub 저장소·AMO 등록 페이지·Mozilla 서명은 아직 생성하지 않았습니다. 일반 사용자에게 미서명 ZIP을 설치할 수 있다고 안내하지 않습니다.
+현재 버전은 **0.3.2 미서명 배포 후보**입니다. 공개 AMO 항목과 일반 Firefox용 설치 파일은 Mozilla 제출 후 확인합니다.
 
-## 제출 전
+## 제출물
 
-1. 확장 ID `rabbyt-login-helper@ive.codes`를 실제 배포자 계정에서 사용할지 확정합니다. 최초 서명 후 ID를 바꾸면 별도 확장이 됩니다. 현재 ID의 AMO 등록 가능 여부는 확인하지 않았습니다.
-2. `npm ci --ignore-scripts && npm run check`와 `npm audit`을 확인합니다.
-3. 실제 Firefox 검사와 RabbYT 가져오기 계약 검사를 실행합니다. Android Firefox에서 private 권한 → 로그인 → 자동 주소 전환 → 다운로드 → 탭 종료 → 앱 가져오기를 확인합니다. 이때 실제 파일은 기기에서만 다루고 결과에 쿠키 값을 첨부하지 않습니다.
-4. 개인정보 안내를 AMO에 제공하고 필요한 경우 공식 사이트에 같은 내용을 게시합니다. 공개 페이지 URL을 임의로 만들어 앱에 연결하지 않습니다.
+| 파일 | 용도 |
+| --- | --- |
+| `dist/private-cookie-export-0.3.2-unsigned.zip` | Mozilla 서명·심사 제출 |
+| `dist/private-cookie-export-0.3.2-source.zip` | MIT 라이선스의 공개용 소스, 검증 코드와 문서 |
+| 두 ZIP의 `.sha256` | 내려받은 파일의 무결성 확인 |
+| [개인정보 안내](../PRIVACY.md) | 공개 저장소에서 읽을 수 있는 원문 |
 
-## Mozilla 개발자 계정에서 제출
+```sh
+npm ci --ignore-scripts
+npm run check
+npm audit
+```
 
-1. [AMO Developer Hub](https://addons.mozilla.org/developers/)에 본인 계정으로 로그인하고 강한 추가 인증을 설정합니다. 계정과 API 토큰은 채팅에 보내지 않습니다.
-2. 휴대폰에서 쉽게 설치하도록 **AMO 공개 등록**과 Android 지원을 선택하는 경로를 우선 검토합니다. 비공개/self-distribution 방식도 Mozilla 서명이 필요하며 설치 동선은 별도 확인해야 합니다.
-3. `dist/rabbyt-login-helper-0.1.0-unsigned.zip`을 제출합니다. 실행 코드에는 빌드 단계가 없고, ZIP은 저장소의 `extension/` 파일과 라이선스만 포함합니다. 난독화·원격 코드·외부 런타임 의존성이 없음을 설명합니다.
-4. 요구 권한은 YouTube 호스트·cookies·downloads입니다. 로그인 정보의 **기기 파일 내보내기**를 숨기지 않도록 `authenticationInfo`를 선언했습니다. 운영자 서버 전송은 없으며 사용자 버튼과 동의가 필요합니다. Mozilla가 다른 분류나 추가 안내를 요구하면 실제 동작에 맞춰 조정합니다. 승인·서명을 보장할 수는 없습니다.
-5. 검토·서명이 끝난 실제 등록 페이지에서 Android 설치를 확인합니다. 이후 RabbYT 앱의 기존 `cookies.txt` 안내와 버튼을 이 도우미의 실제 URL·이름·절차로 바꿉니다. 그때까지 동작 중인 기존 링크를 미등록 주소로 바꾸지 않습니다.
+`npm run verify-release`는 제출용 ZIP과 소스 ZIP, 각 SHA-256을 현재 소스에서 다시 계산한 결과와 비교합니다. 같은 Python·zlib 빌드 환경에서는 ZIP까지 바이트 단위로 일치합니다. Firefox에 넣는 HTML·CSS·JavaScript·SVG는 원본 그대로입니다. `node_modules`와 테스트는 제출용 ZIP에 포함하지 않습니다.
 
-Mozilla 계정이나 배포 권한이 없는 현재 상태에서는 업로드·서명·게시를 실행하지 않았습니다. 사용자 승인과 실제 계정 접근이 필요한 단계는 여기부터이며, 소스·검사·제출 파일은 이 프로젝트에서 준비합니다.
+0.3.2 미서명 제출 ZIP의 SHA-256입니다. Mozilla가 서명한 XPI와는 해시가 다릅니다.
 
-## 검토자 재현
+```text
+9f359623a783fcaae1278b7fd59f7cb433f76ccb888f783968a36679b87674a6
+```
 
-`npm test`는 합성 API로 접근 경계·경합·실패를 검사합니다. `npm run browser-test -- /path/to/firefox`는 임시 브라우저 프로필과 합성 로그인 값만 사용하며 실제 사용자 계정을 요구하지 않습니다. `npm run android-contract`는 RabbYT의 실제 Java 파서에 합성 출력 파일을 넣습니다. 개인 계정이나 쿠키 값을 검토자에게 전달할 필요는 없습니다.
+## 등록 정보 초안
 
-참고: [Mozilla 서명·배포 안내](https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/), [Android 확장 개발](https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/), [Firefox 데이터 동의](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/).
+**이름** Private Cookie Export
+
+**요약** Firefox 사생활 보호 탭에서 승인한 HTTPS 사이트의 쿠키를 Netscape 파일로 저장합니다.
+
+**설명** 사생활 보호 탭 한 개에서 확장을 열고 쿠키 파일 준비를 선택합니다. 처음 쓰는 사이트는 Firefox에서 권한을 승인합니다. 일반 사이트는 현재 페이지에 적용되는 쿠키를 읽습니다. YouTube는 같은 탭에서 저장용 주소로 이동한 뒤 준비합니다. 파일 저장을 누르고 다운로드를 확인합니다. YouTube에서는 확인 후 팝업에서 해당 탭을 닫을 수 있습니다. 파일은 암호화되지 않으므로 사용한 뒤 삭제하세요.
+
+**심사 메모** The add-on uses `activeTab` to identify the current private HTTPS page, and `cookies` together with the explicitly granted optional host permission to read its cookies. It requests the current host only, or the YouTube domain and its subdomains for the dedicated YouTube flow. After a user requests preparation, the file is held in the extension popup and saved through a user-clicked link. The CSP blocks connections from extension pages. We declare `authenticationInfo` because the local file may contain session credentials. The runtime files are the original source. The bundled browser test uses a disposable profile with synthetic cookies.
+
+## 검사와 공개 순서
+
+1. [공개 소스 저장소](https://github.com/hojin-v/private-cookie-export)와 [공개 개인정보 안내](https://github.com/hojin-v/private-cookie-export/blob/main/PRIVACY.md)를 등록 정보에 연결합니다. Mozilla에 제출할 확장 ID는 `private-cookie-export@ive.codes`입니다. 최초 서명 후 ID가 바뀌면 별도 확장으로 설치됩니다.
+2. Android Firefox 테스트 환경에서 사생활 보호 권한 허용, 단일 탭, 일반 HTTPS 사이트와 YouTube에서 개별 사이트 권한 승인, 팝업 준비·저장, 호환 도구에서의 가져오기를 점검합니다. 합성 검사 결과는 [검증 기록](VALIDATION.md)에 있습니다.
+3. [AMO Developer Hub](https://addons.mozilla.org/developers/)에 배포자 계정으로 로그인합니다. **AMO 공개 등록**과 Android 지원을 선택하고 제출용 ZIP, 개인정보 안내 URL, 설명과 심사 메모를 등록합니다. 공개 URL은 실제 등록 결과에서 확인합니다.
+4. Mozilla가 서명한 XPI를 내려받아 `python3 scripts/build.py --verify-signed 받은파일.xpi`로 페이로드를 대조합니다. 이 명령은 서명 메타데이터를 제외한 원본과 추가 파일 여부를 확인하며, 서명 유효성 자체는 실제 Firefox 설치에서 확인합니다. 배포된 버전이 일반 Android Firefox에서 설치되고 실제로 동작하는지 확인합니다.
+5. 호환 도구에서 확장을 안내할 때 실제 공개 AMO 주소를 사용합니다.
+
+서명 전에 Android에서 시험하려면 테스트 기기의 Firefox에서 **USB 원격 디버깅**을 켜고, 개발 PC의 `adb`와 `web-ext`로 아래처럼 임시 설치합니다. 두 도구는 개발 시에만 사용합니다.
+
+```sh
+web-ext run --source-dir extension --target firefox-android --firefox-apk org.mozilla.firefox
+```
+
+Mozilla 계정 토큰과 실제 쿠키 파일은 공개 저장소나 제출용 ZIP에 넣지 않습니다. [Mozilla 서명·배포](https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/) · [Firefox Android 개발·테스트](https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/) · [인증 정보 선언](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/)
