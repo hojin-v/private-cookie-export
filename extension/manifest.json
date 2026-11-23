@@ -14,7 +14,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "private-cookie-export@ive.codes",
+      "id": "private-cookie-export@hnode",
       "strict_min_version": "140.0",
       "data_collection_permissions": { "required": ["authenticationInfo"] }
     },

@@ -22,7 +22,7 @@ npm audit
 0.3.7 미서명 제출 ZIP의 SHA-256입니다. Mozilla가 서명한 XPI와는 해시가 다릅니다.
 
 ```text
-d78a3835d4d532dcec55ab8d60eb5dd5da9ad14b2672440b655b4c1c85da4bd3
+24a55bdf816f6ed9ce09293f40cff352b3174a62142faba2a1d559d7b566e2b0
 ```
 
 ## 등록 정보 초안
@@ -39,7 +39,7 @@ d78a3835d4d532dcec55ab8d60eb5dd5da9ad14b2672440b655b4c1c85da4bd3
 
 ## 검사와 공개 순서
 
-1. [공개 소스 저장소](https://github.com/hojin-v/private-cookie-export)와 [공개 개인정보 안내](https://github.com/hojin-v/private-cookie-export/blob/main/PRIVACY.md)를 등록 정보에 연결합니다. Mozilla에 제출할 확장 ID는 `private-cookie-export@ive.codes`입니다. 최초 서명 후 ID가 바뀌면 별도 확장으로 설치됩니다.
+1. [공개 소스 저장소](https://github.com/hojin-v/private-cookie-export)와 [공개 개인정보 안내](https://github.com/hojin-v/private-cookie-export/blob/main/PRIVACY.md)를 등록 정보에 연결합니다. Mozilla에 제출할 확장 ID는 `private-cookie-export@hnode`입니다. 최초 서명 후 ID가 바뀌면 별도 확장으로 설치됩니다.
 2. Android Firefox 테스트 환경에서 사생활 보호 권한 허용, 단일 탭, 일반 HTTPS 사이트와 YouTube에서 개별 사이트 권한 승인, 팝업 준비·저장, 호환 도구에서의 가져오기를 점검합니다. 합성 검사 결과는 [검증 기록](VALIDATION.md)에 있습니다.
 3. [AMO Developer Hub](https://addons.mozilla.org/developers/)에 배포자 계정으로 로그인합니다. **AMO 공개 등록**과 Android 지원을 선택하고 제출용 ZIP, 개인정보 안내 URL, 설명과 심사 메모를 등록합니다. 공개 URL은 실제 등록 결과에서 확인합니다.
 4. Mozilla가 서명한 XPI를 내려받아 `python3 scripts/build.py --verify-signed 받은파일.xpi`로 페이로드를 대조합니다. 이 명령은 서명 메타데이터를 제외한 원본과 추가 파일 여부를 확인하며, 서명 유효성 자체는 실제 Firefox 설치에서 확인합니다. 배포된 버전이 일반 Android Firefox에서 설치되고 실제로 동작하는지 확인합니다.
