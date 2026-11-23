@@ -10,7 +10,10 @@ import { setTimeout as delay } from "node:timers/promises";
 
 const binary = process.argv[2];
 const scenario = process.argv[3] ?? "youtube";
-if (!binary || !["youtube", "generic"].includes(scenario)) throw new Error("Usage: npm run browser-test -- /absolute/path/to/firefox [youtube|generic]");
+const expectedLocale = process.argv[4];
+if (!binary || !["youtube", "generic"].includes(scenario) || (expectedLocale && !["en", "ko"].includes(expectedLocale))) {
+  throw new Error("Usage: npm run browser-test -- /absolute/path/to/firefox [youtube|generic] [en|ko]");
+}
 const root = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(path.join(tmpdir(), "private-cookie-export-browser-test-"));
 const profile = path.join(temporary, "profile"), addon = path.join(temporary, "addon"), downloads = path.join(temporary, "downloads");
@@ -68,12 +71,14 @@ try {
     try { report = JSON.parse(await readFile(path.join(downloads, "rabbyt-helper-browser-report.json"), "utf8")); break; } catch { await delay(100); }
   }
   if (!report?.ok) throw new Error(report?.error || "Browser report timed out");
+  if (expectedLocale && report.locale !== expectedLocale) throw new Error(`Expected locale ${expectedLocale}, got ${report.locale}`);
+  if (report.filename !== "cookies.txt") throw new Error("Firefox suggested an unexpected filename");
   const output = await readFile(path.join(downloads, report.filename), "utf8");
   if (!output.startsWith("# Netscape HTTP Cookie File\n") || !output.includes("TEST_ONLY_NOT_A_REAL_SESSION")) throw new Error("Browser saved an unexpected file");
   const expected = scenario === "generic" ? "\tFIXTURE_SESSION\t" : "\tLOGIN_INFO\t";
   if (!output.includes(expected)) throw new Error("Browser saved a file from the wrong site");
   if (output.includes("FIXTURE_MUST_NOT_EXPORT")) throw new Error("Browser saved a cookie outside the requested store or page path");
-  console.log(JSON.stringify({ ok: true, scenario, checks: report.checks, cookieFileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, scenario, locale: report.locale, filename: report.filename, checks: report.checks, cookieFileVerified: true }, null, 2));
 } catch (error) {
   await writeFile(path.join(temporary, "firefox.log"), logs);
   console.error(`Browser test failed: ${error.message}\nDiagnostics: ${temporary}`); process.exitCode = 1;

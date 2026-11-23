@@ -1,0 +1,168 @@
+{
+  "localeTag": {
+    "message": "en"
+  },
+  "extensionDescription": {
+    "message": "Export cookies for an approved HTTPS page from a private Firefox tab to a standard cookies.txt file."
+  },
+  "checking": {
+    "message": "Checking the current tab…"
+  },
+  "scopeYouTube": {
+    "message": "Includes only cookies that apply to the YouTube export URL."
+  },
+  "scopePage": {
+    "message": "Includes only cookies that apply to this HTTPS page."
+  },
+  "prepare": {
+    "message": "Prepare cookie file"
+  },
+  "preparePermission": {
+    "message": "Approve site access and prepare"
+  },
+  "cookieCounts": {
+    "message": "Cookies $TOTAL$ · Session $SESSION$ · HttpOnly $HTTPONLY$",
+    "placeholders": {
+      "total": {
+        "content": "$1"
+      },
+      "session": {
+        "content": "$2"
+      },
+      "httponly": {
+        "content": "$3"
+      }
+    }
+  },
+  "privateTabStatus": {
+    "message": "$HOST$ · Private tab",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "preparing": {
+    "message": "Preparing the cookie file…"
+  },
+  "prepared": {
+    "message": "Cookie file ready."
+  },
+  "saveFile": {
+    "message": "Save file"
+  },
+  "expired": {
+    "message": "The download link expired. Prepare the file again."
+  },
+  "revoking": {
+    "message": "Revoking site access…"
+  },
+  "revokeSite": {
+    "message": "Revoke site access"
+  },
+  "checkDownloads": {
+    "message": "Check the file in Firefox Downloads."
+  },
+  "checkDownloadsYouTube": {
+    "message": "Confirm the file finished downloading in Firefox."
+  },
+  "closeAfterDownload": {
+    "message": "Close tab after confirming download"
+  },
+  "closingYouTube": {
+    "message": "Closing the private YouTube tab…"
+  },
+  "closedYouTube": {
+    "message": "The private YouTube tab was closed."
+  },
+  "fileWarning": {
+    "message": "This plaintext file may grant account access. Delete it when finished."
+  },
+  "instructions": {
+    "message": "How to use"
+  },
+  "stepPrivate": {
+    "message": "In Firefox extension settings, enable Run in Private Windows for this add-on."
+  },
+  "stepTab": {
+    "message": "Open the HTTPS page in one private tab. Sign in to the site if you need an account session."
+  },
+  "stepPrepare": {
+    "message": "Select Prepare cookie file. For a new site, approve access in Firefox."
+  },
+  "stepSave": {
+    "message": "Check the counts and select Save file. For YouTube, confirm the download and then close the tab."
+  },
+  "privacyHeading": {
+    "message": "File contents and permissions"
+  },
+  "popupContents": {
+    "message": "Each row stores a cookie’s scope, expiry, name and value. Use the file when a compatible tool needs your existing session."
+  },
+  "detailsLink": {
+    "message": "File fields and source verification"
+  },
+  "privacyUse": {
+    "message": "A compatible tool can use this file to reuse your existing session when it needs sign-in."
+  },
+  "privacyGeneric": {
+    "message": "Other sites: includes cookies that apply to the approved HTTPS page."
+  },
+  "privacyYouTube": {
+    "message": "YouTube: opens www.youtube.com/robots.txt in the same tab to reduce cookie rotation. Only cookies that apply to that URL are included."
+  },
+  "privacyFields": {
+    "message": "Each row includes the domain, subdomain flag, path, Secure flag, expiry, name and value. Session cookies use expiry 0. HttpOnly restricts page JavaScript access. Cookie values are plaintext in the file."
+  },
+  "privacyProof": {
+    "message": "Firefox shows which site permission is requested. You can revoke it from the popup. The public manifest shows the permissions and the policy that blocks extension-page connections. You can rebuild the submission ZIP from the public source."
+  },
+  "fileDocsLink": {
+    "message": "More about file fields"
+  },
+  "sourceProofLink": {
+    "message": "Public source and verification"
+  },
+  "error_private_access": {
+    "message": "Allow this extension to run in private windows from Firefox’s extension settings."
+  },
+  "error_host_access": {
+    "message": "Allow access to the current site in Firefox."
+  },
+  "error_private_tab": {
+    "message": "Open the extension from a private tab showing an HTTPS page."
+  },
+  "error_one_tab": {
+    "message": "Keep only the one private tab you want to export from."
+  },
+  "error_changed": {
+    "message": "The current tab or page changed. Try again."
+  },
+  "error_store": {
+    "message": "The private cookie store for this tab could not be verified."
+  },
+  "error_empty": {
+    "message": "This page has no cookies to export."
+  },
+  "error_not_logged_in": {
+    "message": "YouTube session cookies were not found. Finish sign-in and verification, then try again."
+  },
+  "error_invalid_cookie": {
+    "message": "These cookies cannot be saved in the file. Try a new private tab."
+  },
+  "error_too_large": {
+    "message": "The cookie file would be too large. Try a new private tab."
+  },
+  "error_navigate": {
+    "message": "The export page could not be opened. Check your connection and try again."
+  },
+  "error_busy": {
+    "message": "A cookie export is already in progress."
+  },
+  "error_consent": {
+    "message": "Select Prepare cookie file to approve the export."
+  },
+  "error_internal": {
+    "message": "The extension could not complete the action. Reopen it and try again."
+  }
+}

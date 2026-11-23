@@ -68,6 +68,7 @@ try {
     check((await browser.tabs.get(tab.id)).incognito, "the generic site tab stays open");
   }
   report.filename = result.filename;
+  report.locale = result.locale;
   report.ok = true;
 } catch (error) {
   report.error = String(error.message);

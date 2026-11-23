@@ -2,28 +2,13 @@ export const ROBOTS_URL = "https://www.youtube.com/robots.txt";
 export const YOUTUBE_ORIGIN = "https://www.youtube.com/*";
 export const PRIVATE_STORE = "firefox-private";
 export const MAX_BYTES = 262144;
+export const COOKIE_FILENAME = "cookies.txt";
 const HOST = /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$/;
 export class HelperError extends Error {
   constructor(code) { super(code); this.code = code; }
 }
-export const MESSAGES = Object.freeze({
-  private_access: "Firefox의 이 확장 기능 설정에서 ‘사생활 보호 모드에서 실행’을 허용해 주세요.",
-  host_access: "Firefox에서 현재 사이트 접근을 허용해 주세요.",
-  private_tab: "HTTPS 사이트를 연 사생활 보호 탭에서 확장을 열어 주세요.",
-  one_tab: "내보낼 사생활 보호 탭 한 개만 남겨 주세요.",
-  changed: "현재 탭이나 페이지가 바뀌었습니다. 다시 시도해 주세요.",
-  store: "현재 탭의 사생활 보호 쿠키 저장소를 확인할 수 없습니다.",
-  empty: "이 페이지에 저장할 쿠키가 없습니다.",
-  not_logged_in: "YouTube 로그인 정보가 확인되지 않습니다. 로그인과 추가 인증을 마친 뒤 다시 시도해 주세요.",
-  invalid_cookie: "이 로그인 정보는 파일로 저장할 수 없습니다. 새 사생활 보호 탭에서 다시 로그인해 주세요.",
-  too_large: "로그인 정보의 크기가 너무 큽니다. 새 사생활 보호 탭에서 다시 시도해 주세요.",
-  navigate: "저장용 페이지를 열지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.",
-  busy: "이미 저장을 진행하고 있습니다. 잠시 기다려 주세요.",
-  consent: "로그인 정보 파일 저장에 동의해 주세요.",
-  internal: "도우미를 실행하지 못했습니다. 도우미를 닫았다가 다시 열어 주세요."
-});
-export function safeMessage(error) {
-  return MESSAGES[error instanceof HelperError ? error.code : "internal"] || MESSAGES.internal;
+export function errorMessageKey(error) {
+  return error instanceof HelperError ? `error_${error.code}` : "error_internal";
 }
 export function siteForUrl(value) {
   try {
@@ -98,8 +83,4 @@ export function exportNetscape(input, site, nowSeconds = Math.floor(Date.now() /
     session: entries.filter(cookie => cookie.session).length,
     httpOnly: entries.filter(cookie => cookie.httpOnly).length
   } };
-}
-export function exportFilename(date = new Date(), random = crypto.getRandomValues(new Uint32Array(1))[0]) {
-  const stamp = date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  return `cookies-${stamp}-${random.toString(16).padStart(8, "0")}.txt`;
 }

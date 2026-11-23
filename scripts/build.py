@@ -9,7 +9,8 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 EXTENSION_FILES = (
-    "background.js", "core.js", "exporter.js", "icon.svg", "manifest.json", "messages.js",
+    "_locales/en/messages.json", "_locales/ko/messages.json",
+    "background.js", "core.js", "exporter.js", "i18n.js", "icon.svg", "manifest.json", "messages.js",
     "popup.css", "popup.html", "popup.js", "privacy.html",
 )
 SOURCE_FILES = (

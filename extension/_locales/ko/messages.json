@@ -1,0 +1,168 @@
+{
+  "localeTag": {
+    "message": "ko"
+  },
+  "extensionDescription": {
+    "message": "Firefox 사생활 보호 탭에서 승인한 HTTPS 사이트의 쿠키를 표준 cookies.txt 파일로 저장합니다."
+  },
+  "checking": {
+    "message": "현재 탭을 확인하고 있습니다."
+  },
+  "scopeYouTube": {
+    "message": "YouTube 저장용 주소에 적용되는 쿠키만 담습니다."
+  },
+  "scopePage": {
+    "message": "현재 HTTPS 페이지에 적용되는 쿠키만 담습니다."
+  },
+  "prepare": {
+    "message": "쿠키 파일 준비"
+  },
+  "preparePermission": {
+    "message": "사이트 권한 승인 후 준비"
+  },
+  "cookieCounts": {
+    "message": "쿠키 $TOTAL$개 · 세션 $SESSION$개 · HttpOnly $HTTPONLY$개",
+    "placeholders": {
+      "total": {
+        "content": "$1"
+      },
+      "session": {
+        "content": "$2"
+      },
+      "httponly": {
+        "content": "$3"
+      }
+    }
+  },
+  "privateTabStatus": {
+    "message": "$HOST$ · 사생활 보호 탭",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "preparing": {
+    "message": "쿠키 파일을 준비하고 있습니다…"
+  },
+  "prepared": {
+    "message": "쿠키 파일을 준비했습니다."
+  },
+  "saveFile": {
+    "message": "파일 저장"
+  },
+  "expired": {
+    "message": "저장 링크가 만료됐습니다. 다시 준비해 주세요."
+  },
+  "revoking": {
+    "message": "이 사이트의 권한을 해제하고 있습니다…"
+  },
+  "revokeSite": {
+    "message": "이 사이트 권한 해제"
+  },
+  "checkDownloads": {
+    "message": "Firefox 다운로드에서 저장을 확인하세요."
+  },
+  "checkDownloadsYouTube": {
+    "message": "저장이 끝났는지 Firefox에서 확인하세요."
+  },
+  "closeAfterDownload": {
+    "message": "다운로드 확인 후 탭 닫기"
+  },
+  "closingYouTube": {
+    "message": "YouTube 사생활 보호 탭을 닫고 있습니다…"
+  },
+  "closedYouTube": {
+    "message": "YouTube 사생활 보호 탭을 닫았습니다."
+  },
+  "fileWarning": {
+    "message": "계정 접근에 사용할 수 있는 평문 파일입니다. 필요한 도구에서 사용한 뒤 지우세요."
+  },
+  "instructions": {
+    "message": "사용법"
+  },
+  "stepPrivate": {
+    "message": "Firefox 확장 설정에서 사생활 보호 모드에서 실행을 허용합니다."
+  },
+  "stepTab": {
+    "message": "사생활 보호 탭 한 개에 원하는 HTTPS 페이지를 엽니다. 세션이 필요하면 해당 사이트에서 로그인합니다."
+  },
+  "stepPrepare": {
+    "message": "이 팝업에서 쿠키 파일 준비를 누릅니다. 처음 사용하는 사이트라면 Firefox에서 권한을 승인합니다."
+  },
+  "stepSave": {
+    "message": "건수를 확인하고 파일 저장을 누릅니다. YouTube는 다운로드 완료를 확인한 뒤 다운로드 확인 후 탭 닫기를 누릅니다."
+  },
+  "privacyHeading": {
+    "message": "파일 내용과 권한"
+  },
+  "popupContents": {
+    "message": "쿠키마다 적용 주소·경로·만료·이름·값을 저장합니다. 호환 도구가 기존 세션을 사용할 때만 필요합니다."
+  },
+  "detailsLink": {
+    "message": "항목 뜻과 소스 검증 방법"
+  },
+  "privacyUse": {
+    "message": "호환 도구에서 이미 로그인한 세션을 사용할 때 필요합니다. 로그인 없이 할 수 있는 작업은 파일이 필요 없습니다."
+  },
+  "privacyGeneric": {
+    "message": "일반 사이트는 승인한 현재 HTTPS 페이지에 적용되는 쿠키를 담습니다."
+  },
+  "privacyYouTube": {
+    "message": "YouTube는 쿠키 갱신을 줄이려고 같은 탭을 www.youtube.com/robots.txt로 이동합니다. 해당 주소에 적용되는 쿠키만 담습니다."
+  },
+  "privacyFields": {
+    "message": "각 줄에는 도메인, 하위 도메인 포함 여부, 경로, HTTPS 전용 여부, 만료, 이름, 값이 들어갑니다. 고정 만료 날짜가 없는 세션 쿠키는 0으로 기록합니다. HttpOnly는 사이트의 JavaScript 접근을 제한하는 속성입니다. 쿠키 값은 파일에 평문으로 저장됩니다."
+  },
+  "privacyProof": {
+    "message": "Firefox가 요청 사이트 권한을 표시하며 팝업에서 해제할 수 있습니다. 공개 매니페스트에는 권한과 확장 페이지 연결 차단 정책이 있으며 공개 소스로 제출용 ZIP을 다시 만들 수 있습니다."
+  },
+  "fileDocsLink": {
+    "message": "파일 항목 자세히 보기"
+  },
+  "sourceProofLink": {
+    "message": "공개 소스와 검증 방법"
+  },
+  "error_private_access": {
+    "message": "Firefox의 이 확장 기능 설정에서 ‘사생활 보호 모드에서 실행’을 허용해 주세요."
+  },
+  "error_host_access": {
+    "message": "Firefox에서 현재 사이트 접근을 허용해 주세요."
+  },
+  "error_private_tab": {
+    "message": "HTTPS 사이트를 연 사생활 보호 탭에서 도우미를 열어 주세요."
+  },
+  "error_one_tab": {
+    "message": "내보낼 사생활 보호 탭 한 개만 남겨 주세요."
+  },
+  "error_changed": {
+    "message": "현재 탭이나 페이지가 바뀌었습니다. 다시 시도해 주세요."
+  },
+  "error_store": {
+    "message": "현재 탭의 사생활 보호 쿠키 저장소를 확인할 수 없습니다."
+  },
+  "error_empty": {
+    "message": "이 페이지에 저장할 쿠키가 없습니다."
+  },
+  "error_not_logged_in": {
+    "message": "YouTube 로그인 정보가 확인되지 않습니다. 로그인과 추가 인증을 마친 뒤 다시 시도해 주세요."
+  },
+  "error_invalid_cookie": {
+    "message": "이 쿠키는 파일에 저장할 수 없습니다. 새 사생활 보호 탭에서 다시 시도해 주세요."
+  },
+  "error_too_large": {
+    "message": "쿠키 파일 크기가 너무 큽니다. 새 사생활 보호 탭에서 다시 시도해 주세요."
+  },
+  "error_navigate": {
+    "message": "저장용 페이지를 열지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요."
+  },
+  "error_busy": {
+    "message": "이미 저장을 진행하고 있습니다. 잠시 기다려 주세요."
+  },
+  "error_consent": {
+    "message": "쿠키 파일 준비를 눌러 내보내기에 동의해 주세요."
+  },
+  "error_internal": {
+    "message": "도우미를 실행하지 못했습니다. 도우미를 닫았다가 다시 열어 주세요."
+  }
+}

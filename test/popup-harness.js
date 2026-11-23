@@ -14,9 +14,15 @@ try {
   const download = document.querySelector("#download");
   const close = document.querySelector("#close");
   await waitFor(() => !prepare.hidden && !prepare.disabled, "real Firefox private store is recognized");
+  report.locale = document.documentElement.lang;
+  await waitFor(() => download.textContent === browser.i18n.getMessage("saveFile") && download.textContent !== "", "download label is localized");
   prepare.click();
   await waitFor(() => !download.hidden && download.href.startsWith("blob:moz-extension:"), "only an extension-owned Blob link is shown after the preparation button is pressed");
-  await waitFor(() => !document.querySelector("#summary").hidden && /^쿠키 \d+개 · 세션 \d+개 · HttpOnly \d+개$/.test(document.querySelector("#summary").textContent), "only aggregate export metadata appears in the popup");
+  const summary = document.querySelector("#summary");
+  await waitFor(() => {
+    const counts = summary.textContent.match(/\d+/g);
+    return !summary.hidden && counts?.length === 3 && summary.textContent === browser.i18n.getMessage("cookieCounts", counts);
+  }, "only localized aggregate export metadata appears in the popup");
   report.filename = download.download;
   await waitFor(() => close.hidden, "no tab-close button appears before saving");
   download.click();

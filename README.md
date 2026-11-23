@@ -2,6 +2,8 @@
 
 Firefox의 사생활 보호 탭에서, 사용자가 승인한 사이트의 쿠키를 Netscape `cookies.txt` 파일로 내보내는 GNU GPL v3 오픈소스 확장입니다. 호환 도구가 **이미 로그인한 세션을 사용해야 할 때** 이 파일이 필요합니다. 로그인 없이 가능한 작업에는 파일이 필요 없습니다.
 
+확장 화면과 내장 도움말은 Firefox 언어에 맞춰 한국어 또는 영어로 표시됩니다. 다른 언어에서는 영어가 기본값입니다.
+
 | 한눈에 보기 | 확인할 내용 |
 | --- | --- |
 | **무엇을 내보내나요?** | 일반 사이트는 현재 HTTPS 페이지에 적용되는 쿠키, YouTube는 `www.youtube.com/robots.txt`에 적용되는 사생활 보호 쿠키를 담습니다. |
@@ -44,4 +46,4 @@ npm run browser-test -- /path/to/firefox youtube
 npm run browser-test -- /path/to/firefox generic
 ```
 
-**0.3.5 미서명 배포 후보**입니다. Firefox Android 155 이상, 데스크톱 Firefox 140 이상을 대상으로 합니다. 사용자 사용법은 확장 팝업에서 확인할 수 있습니다. [배포 절차](docs/RELEASE.md) · [GNU GPL v3](LICENSE) · [이전 버전의 라이선스 고지](NOTICE)
+**0.3.6 미서명 배포 후보**입니다. Firefox Android 155 이상, 데스크톱 Firefox 140 이상을 대상으로 합니다. 사용자 사용법은 확장 팝업에서 확인할 수 있습니다. [배포 절차](docs/RELEASE.md) · [GNU GPL v3](LICENSE) · [이전 버전의 라이선스 고지](NOTICE)

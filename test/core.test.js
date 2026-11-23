@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ROBOTS_URL, exportNetscape, validateTab, siteForUrl, assertPrivateStore, HelperError, safeMessage, exportFilename } from "../extension/core.js";
+import { ROBOTS_URL, COOKIE_FILENAME, exportNetscape, validateTab, siteForUrl, assertPrivateStore, HelperError, errorMessageKey } from "../extension/core.js";
 import { cookie, cookies, tab } from "./fixtures.js";
 
 test("HTTPS sites are canonicalized and private mode is required", () => {
@@ -62,12 +62,12 @@ test("generic exports preserve applicable parent domain and path, never sibling 
 test("line/header injection, ambiguous duplicates and oversized exports are rejected without exposing values", () => {
   for (const data of [[cookie("LOGIN_INFO", { value: "TEST\nSECRET" }), cookie("SAPISID")], [...cookies(), cookie("BAD\tNAME")], [...cookies(), cookie("SAPISID", { value: "OTHER_TEST_VALUE" })]]) {
     assert.throws(() => exportNetscape(data, siteForUrl("https://www.youtube.com/")), error => {
-      assert.equal(error.code, "invalid_cookie"); assert.ok(!safeMessage(error).includes("TEST")); return true;
+      assert.equal(errorMessageKey(error), "error_invalid_cookie"); return true;
     });
   }
   assert.throws(() => exportNetscape([...cookies(), cookie("LARGE", { value: "x".repeat(262144) })], siteForUrl("https://www.youtube.com/")), /too_large/);
 });
-test("user errors and generated filenames contain no account identifiers or raw browser errors", () => {
-  assert.ok(!safeMessage(Error("TOKEN_TEST_MUST_NOT_LEAK")).includes("TOKEN"));
-  assert.equal(exportFilename(new Date("2026-10-23T12:34:56Z"), 12), "cookies-20261023T123456Z-0000000c.txt");
+test("browser failures use a generic message and the download has a fixed name", () => {
+  assert.equal(errorMessageKey(Error("TOKEN_TEST_MUST_NOT_LEAK")), "error_internal");
+  assert.equal(COOKIE_FILENAME, "cookies.txt");
 });

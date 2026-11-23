@@ -1,4 +1,4 @@
-import { ROBOTS_URL, PRIVATE_STORE, HelperError, safeMessage, siteForUrl, validateTab, assertPrivateStore, isRobots, exportNetscape, exportFilename } from "./core.js";
+import { ROBOTS_URL, PRIVATE_STORE, HelperError, errorMessageKey, siteForUrl, validateTab, assertPrivateStore, isRobots, exportNetscape } from "./core.js";
 
 export class ExportController {
   constructor(api, navigationTimeout = 15000) {
@@ -27,7 +27,7 @@ export class ExportController {
       const allowed = await this.api.permissions.contains({ origins: [site.permission] });
       return { phase: "ready", tabId: tab.id, host: site.host, permission: site.permission, allowed };
     } catch (error) {
-      return { phase: "blocked", message: safeMessage(error) };
+      return { phase: "blocked", messageKey: errorMessageKey(error) };
     }
   }
 
@@ -57,15 +57,15 @@ export class ExportController {
       const { tab, site } = await this.context(tabId, permission);
       if (!site.youtube || !isRobots(tab.url)) throw new HelperError("changed");
       await this.api.tabs.remove(tab.id);
-      return { phase: "closed", message: "YouTube 사생활 보호 탭을 닫았습니다." };
+      return { phase: "closed", messageKey: "closedYouTube" };
     } catch (error) {
-      return { phase: "error", message: safeMessage(error) };
+      return { phase: "error", messageKey: errorMessageKey(error) };
     }
   }
 
   async prepare(consent, tabId, permission) {
-    if (consent !== true || !Number.isInteger(tabId)) return { phase: "error", message: safeMessage(new HelperError("consent")) };
-    if (this.running) return { phase: "error", message: safeMessage(new HelperError("busy")) };
+    if (consent !== true || !Number.isInteger(tabId)) return { phase: "error", messageKey: errorMessageKey(new HelperError("consent")) };
+    if (this.running) return { phase: "error", messageKey: errorMessageKey(new HelperError("busy")) };
     this.running = true;
     try {
       if (typeof permission !== "string") throw new HelperError("host_access");
@@ -82,9 +82,9 @@ export class ExportController {
           || !await this.api.permissions.contains({ origins })) throw new HelperError("changed");
       const { text, summary } = exportNetscape(cookies, before.site);
       const file = new Blob([text], { type: "text/plain;charset=utf-8" });
-      return { phase: "prepared", file, filename: exportFilename(), tabId, summary };
+      return { phase: "prepared", file, tabId, summary };
     } catch (error) {
-      return { phase: "error", message: safeMessage(error) };
+      return { phase: "error", messageKey: errorMessageKey(error) };
     } finally {
       this.running = false;
     }

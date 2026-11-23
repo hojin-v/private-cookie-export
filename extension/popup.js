@@ -1,4 +1,5 @@
-import { YOUTUBE_ORIGIN, MAX_BYTES, HelperError, safeMessage } from "./core.js";
+import { YOUTUBE_ORIGIN, MAX_BYTES, COOKIE_FILENAME, HelperError, errorMessageKey } from "./core.js";
+import { message } from "./i18n.js";
 
 const status = document.querySelector("#status");
 const scope = document.querySelector("#scope");
@@ -13,20 +14,20 @@ let prepared;
 let closeTabId;
 let expiryTimer;
 
-function show(message) {
-  status.textContent = message;
+function show(feedback) {
+  status.textContent = feedback;
   const ready = current?.phase === "ready";
   scope.hidden = !ready;
   scope.textContent = ready && current.permission === YOUTUBE_ORIGIN
-    ? "YouTube 저장용 주소에 적용되는 쿠키만 담습니다."
-    : "현재 HTTPS 페이지 · 이 주소에 적용되는 쿠키만 포함합니다.";
+    ? message("scopeYouTube")
+    : message("scopePage");
   prepare.hidden = !ready || Boolean(prepared);
   prepare.disabled = busy;
-  prepare.textContent = current?.allowed ? "쿠키 파일 준비" : "사이트 권한 승인 후 준비";
+  prepare.textContent = current?.allowed ? message("prepare") : message("preparePermission");
   summary.hidden = !prepared;
   if (prepared) {
     const { total, session, httpOnly } = prepared.summary;
-    summary.textContent = `쿠키 ${total}개 · 세션 ${session}개 · HttpOnly ${httpOnly}개`;
+    summary.textContent = message("cookieCounts", [total, session, httpOnly].map(String));
   } else {
     summary.textContent = "";
   }
@@ -48,8 +49,8 @@ function discardFile() {
 
 async function refresh() {
   try { current = await browser.runtime.sendMessage({ action: "status" }); }
-  catch (error) { current = { phase: "blocked", message: safeMessage(error) }; }
-  show(current.phase === "ready" ? `${current.host} · 사생활 보호 탭` : current.message);
+  catch (error) { current = { phase: "blocked", messageKey: errorMessageKey(error) }; }
+  show(current.phase === "ready" ? message("privateTabStatus", current.host) : message(current.messageKey));
 }
 
 prepare.addEventListener("click", async () => {
@@ -57,8 +58,8 @@ prepare.addEventListener("click", async () => {
   const { tabId, permission } = current;
   closeTabId = undefined;
   busy = true;
-  show("쿠키 파일을 준비하고 있습니다…");
-  let message;
+  show(message("preparing"));
+  let feedback;
   try {
     if (!current.allowed) {
       current.allowed = await browser.permissions.request({ origins: [permission] });
@@ -66,27 +67,26 @@ prepare.addEventListener("click", async () => {
     }
     const result = await browser.runtime.sendMessage({ action: "prepare", consent: true, tabId, permission });
     if (result.phase !== "prepared") {
-      message = result.message;
+      feedback = message(result.messageKey);
     } else {
       const counts = result.summary;
       if (result.tabId !== tabId || !(result.file instanceof Blob) || result.file.size < 1 || result.file.size > MAX_BYTES
-          || !/^cookies-\d{8}T\d{6}Z-[0-9a-f]{8}\.txt$/.test(result.filename)
           || !Number.isInteger(counts?.total) || counts.total < 1
           || ![counts.session, counts.httpOnly].every(count => Number.isInteger(count) && count >= 0 && count <= counts.total)) throw new Error();
       prepared = { url: URL.createObjectURL(result.file), expiresAt: Date.now() + 60000, summary: counts };
       download.href = prepared.url;
-      download.download = result.filename;
+      download.download = COOKIE_FILENAME;
       expiryTimer = setTimeout(() => {
         discardFile();
-        show("저장 링크가 만료됐습니다. 다시 준비해 주세요.");
+        show(message("expired"));
       }, 60000);
-      message = "쿠키 파일을 준비했습니다.";
+      feedback = message("prepared");
     }
   } catch (error) {
-    message = safeMessage(error);
+    feedback = message(errorMessageKey(error));
   } finally {
     busy = false;
-    show(message);
+    show(feedback);
   }
 });
 
@@ -95,13 +95,13 @@ revoke.addEventListener("click", async () => {
   busy = true;
   discardFile();
   closeTabId = undefined;
-  show("이 사이트의 권한을 해제하고 있습니다…");
+  show(message("revoking"));
   try {
     const origins = [current.permission];
     if (current.permission === YOUTUBE_ORIGIN) origins.push("https://*.youtube.com/*");
     await browser.permissions.remove({ origins });
     await refresh();
-  } catch (error) { show(safeMessage(error)); }
+  } catch (error) { show(message(errorMessageKey(error))); }
   finally { busy = false; prepare.disabled = false; revoke.disabled = false; }
 });
 
@@ -109,29 +109,29 @@ download.addEventListener("click", event => {
   if (!prepared || Date.now() >= prepared.expiresAt) {
     event.preventDefault();
     discardFile();
-    show("저장 링크가 만료됐습니다. 다시 준비해 주세요.");
+    show(message("expired"));
     return;
   }
   prepared.started = true;
   if (current.permission === YOUTUBE_ORIGIN) closeTabId = current.tabId;
-  show(closeTabId === undefined ? "Firefox 다운로드에서 저장을 확인하세요." : "저장이 끝났는지 Firefox에서 확인하세요.");
+  show(closeTabId === undefined ? message("checkDownloads") : message("checkDownloadsYouTube"));
 });
 
 close.addEventListener("click", async () => {
   if (busy || closeTabId === undefined) return;
   busy = true;
-  show("YouTube 사생활 보호 탭을 닫고 있습니다…");
-  let message;
+  show(message("closingYouTube"));
+  let feedback;
   try {
     const result = await browser.runtime.sendMessage({ action: "close-youtube", tabId: closeTabId, permission: YOUTUBE_ORIGIN });
-    message = result.message;
+    feedback = message(result.messageKey);
     if (result.phase === "closed") {
       closeTabId = undefined;
       discardFile();
       current = { phase: "closed" };
     }
-  } catch (error) { message = safeMessage(error); }
-  finally { busy = false; show(message); }
+  } catch (error) { feedback = message(errorMessageKey(error)); }
+  finally { busy = false; show(feedback); }
 });
 
 void refresh();

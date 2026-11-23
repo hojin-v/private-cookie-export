@@ -20,3 +20,18 @@ test("the distributable has only optional per-site access and no content injecti
   assert.ok(manifest.content_security_policy.extension_pages.includes("connect-src 'none'"));
   assert.deepEqual(manifest.browser_specific_settings.gecko.data_collection_permissions.required, ["authenticationInfo"]);
 });
+test("both supported locales cover the popup and the file and permission guide", async () => {
+  const extension = new URL("../extension/", import.meta.url);
+  const read = filename => readFile(new URL(filename, extension), "utf8");
+  const [english, korean] = await Promise.all(["en", "ko"].map(async locale => {
+    const catalog = JSON.parse(await read(`_locales/${locale}/messages.json`));
+    assert.equal(catalog.localeTag.message, locale);
+    return catalog;
+  }));
+  assert.deepEqual(Object.keys(english).sort(), Object.keys(korean).sort());
+  for (const file of ["popup.html", "privacy.html"]) {
+    for (const [, key] of (await read(file)).matchAll(/data-message="([^"]+)"/g)) {
+      assert.ok(english[key]?.message && korean[key]?.message, `${file}: ${key}`);
+    }
+  }
+});
